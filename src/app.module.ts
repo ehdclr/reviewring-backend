@@ -6,7 +6,7 @@ import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
@@ -23,7 +23,7 @@ import redisConfig from './config/redis.config';
     }),
     PrismaModule,
     RedisModule,
-    AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [PrismaService],

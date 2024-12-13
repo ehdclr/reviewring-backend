@@ -1,5 +1,6 @@
 import { Module, Global } from '@nestjs/common';
-import { Redis } from '@upstash/redis';
+// import { Redis } from '@upstash/redis';
+import { Redis } from 'ioredis';
 import { RedisService } from './redis.service';
 
 @Global()
@@ -9,8 +10,10 @@ import { RedisService } from './redis.service';
       provide: 'REDIS', //redisService에 주입할 이름
       useFactory: () => {
         return new Redis({
-          url: process.env.REDIS_URL,
-          token: process.env.REDIS_TOKEN,
+          // url: process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : "localhost",
+          // token: process.env.REDIS_TOKEN,
+          host: 'localhost',
+          port: 6379,
         });
       },
     },
