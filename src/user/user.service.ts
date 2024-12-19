@@ -1,24 +1,22 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-
-interface ISignUpUser {
-  email: string;
-  name: string;
-  phone: string;
-  nickname: string;
-  password: string;
-}
-
+import { SignUpUserInput } from './dto/signup-user.input';
+import { User } from './entities/user.entity';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async signUp(user: ISignUpUser) {
+  async signUp(user: SignUpUserInput) {
     const hashedPassword = await this.hashPassword(user.password);
     const normalizedEmail = user.email.toLowerCase();
     await this.validateUserData(normalizedEmail);
-    return this.prisma.user.create({
+
+    const createdUser = await this.prisma.user.create({
       data: {
         email: normalizedEmail,
         name: user.name,
@@ -27,6 +25,26 @@ export class UserService {
         password: hashedPassword,
       },
     });
+    return createdUser;
+  }
+
+  async getUser(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 회원입니다.');
+    }
+
+    const entity = new User();
+    entity.id = user.id;
+    entity.email = user.email;
+    entity.name = user.name;
+    entity.phone = user.phone;
+    entity.nickname = user.nickname;
+    entity.createdAt = user.createdAt;
+
+    return entity;
   }
 
   private async validateUserData(email: string) {

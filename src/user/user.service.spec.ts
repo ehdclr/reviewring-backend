@@ -75,4 +75,22 @@ describe('UserService', () => {
       },
     });
   });
+
+  it('회원 조회 성공', async () => {
+    const id = 1;
+    const mockUser = {
+      id,
+      email: 'test@test.com',
+      name: 'Test User',
+      phone: '010-1234-5678',
+      nickname: 'test',
+      createdAt: new Date(),
+    };
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+    const result = await service.getUser(id);
+    expect(result).toEqual(mockUser);
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { id },
+    });
+  });
 });
