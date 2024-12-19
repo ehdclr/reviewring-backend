@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
-import { SignUpUserInput } from './dto/signup-user.input';
+import { SignUpUserInput } from './dto/signup.dto';
 // import { User } from './entities/user.entity';
 
 describe('UserResolver', () => {
