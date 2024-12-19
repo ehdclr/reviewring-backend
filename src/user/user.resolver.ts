@@ -22,11 +22,14 @@ export class UserResolver {
   async signUp(
     @Args('signUpUserInput') signUpUserInput: SignUpUserInput,
   ): Promise<SignUpUserRes> {
-    const user = await this.userService.signUp(signUpUserInput);
+    try {
+      const user = await this.userService.signUp(signUpUserInput);
 
-    console.log(user);
-
-    delete user.password; // 비밀번호 제외
-    return { ...user, message: '회원가입 성공', success: true };
+      delete user.password; // 비밀번호 제외
+      return { ...user, message: '회원가입 성공', success: true };
+    } catch (err) {
+      console.log('에러 발생 : 회원가입 실패', err);
+      throw new Error('회원가입 실패');
+    }
   }
 }
