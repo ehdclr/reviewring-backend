@@ -16,6 +16,7 @@ describe('UserResolver', () => {
           provide: UserService,
           useValue: {
             signUp: jest.fn(),
+            getUser: jest.fn(),
           },
         },
       ],
@@ -79,5 +80,22 @@ describe('UserResolver', () => {
     await expect(resolver.signUp(createUserInput)).rejects.toThrow(
       errorMessage,
     );
+  });
+
+  it('회원 조회 성공 resolver 테스트', async () => {
+    const id = 1;
+    const mockUser = {
+      id,
+      email: 'test@test.com',
+      name: 'Test User',
+      phone: '010-1234-5678',
+      nickname: 'test',
+      createdAt: new Date(),
+    };
+
+    jest.spyOn(userService, 'getUser').mockResolvedValue(mockUser as any);
+    const result = await resolver.getUser(id);
+    expect(result).toEqual(mockUser);
+    expect(userService.getUser).toHaveBeenCalledWith(id);
   });
 });

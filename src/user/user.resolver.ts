@@ -1,6 +1,7 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { SignUpUserInput, SignUpUserRes } from './dto/signup.dto';
+import { User } from './entities/user.entity';
 
 @Resolver()
 export class UserResolver {
@@ -8,14 +9,14 @@ export class UserResolver {
 
   @Query(() => String)
   healthCheck(): string {
-    return 'Server is running';
+    return '헬스 체크 성공';
   }
 
   //TODO 회원 조회
-  // @Query(() => User)
-  // async getUser(@Args('id') id: number): Promise<User> {
-  //   return this.userService.getUser(id);
-  // }
+  @Query(() => User)
+  async getUser(@Args('id') id: number): Promise<User> {
+    return this.userService.getUser(id);
+  }
 
   @Mutation(() => SignUpUserRes)
   async signUp(
