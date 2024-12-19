@@ -1,0 +1,31 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Float!
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  password: String
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+}
+
+type Query {
+  healthCheck: String!
+}
+
+type Mutation {
+  signUp(signUpUserInput: SignUpUserInput!): User!
+}
+
+input SignUpUserInput {
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  password: String!
+}
