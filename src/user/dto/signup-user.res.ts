@@ -1,10 +1,27 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { User } from '../entities/user.entity';
 
 @ObjectType()
 export class SignUpUserRes {
-  @Field(() => User)
-  user: User; // 기존 리터럴 대신 User 타입 사용
+  @Field(() => Number, { nullable: true })
+  id?: number;
+
+  @Field(() => String)
+  email: string;
+
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String)
+  phone: string;
+
+  @Field(() => String)
+  nickname: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
 
   @Field(() => String)
   message: string;

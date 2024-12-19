@@ -1,6 +1,5 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
 import { SignUpUserInput } from './dto/signup-user.input';
 import { SignUpUserRes } from './dto/signup-user.res';
 
@@ -19,13 +18,15 @@ export class UserResolver {
   //   return this.userService.getUser(id);
   // }
 
-  @Mutation(() => User)
+  @Mutation(() => SignUpUserRes)
   async signUp(
     @Args('signUpUserInput') signUpUserInput: SignUpUserInput,
   ): Promise<SignUpUserRes> {
     const user = await this.userService.signUp(signUpUserInput);
 
+    console.log(user);
+
     delete user.password; // 비밀번호 제외
-    return { user, message: '회원가입 성공', success: true };
+    return { ...user, message: '회원가입 성공', success: true };
   }
 }
