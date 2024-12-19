@@ -61,4 +61,23 @@ describe('UserResolver', () => {
     });
     expect(userService.signUp).toHaveBeenCalledWith(createUserInput);
   });
+
+  it('회원가입 실패 resolver 테스트', async () => {
+    const createUserInput: SignUpUserInput = {
+      email: 'test@test.com',
+      name: 'Test User',
+      phone: '010-1234-5678',
+      nickname: 'test',
+      password: 'plainPassword',
+    };
+
+    const errorMessage = '회원가입 실패';
+    jest
+      .spyOn(userService, 'signUp')
+      .mockRejectedValue(new Error(errorMessage));
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    await expect(resolver.signUp(createUserInput)).rejects.toThrow(
+      errorMessage,
+    );
+  });
 });
