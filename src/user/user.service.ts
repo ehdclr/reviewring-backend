@@ -1,12 +1,10 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { SignUpUserInput } from './dto/signup.dto';
 import { User } from './entities/user.entity';
+import { GraphQLError } from 'graphql';
+
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
@@ -33,9 +31,13 @@ export class UserService {
       where: { id },
     });
     if (!user) {
-      throw new NotFoundException('존재하지 않는 회원입니다.');
+      throw new GraphQLError('사용자가 존재하지 않습니다.', {
+        extensions: {
+          code: 'USER_NOT_FOUND',
+          status: 404,
+        },
+      });
     }
-
     const entity = new User();
     entity.id = user.id;
     entity.email = user.email;
@@ -52,7 +54,12 @@ export class UserService {
       where: { email },
     });
     if (existingUser) {
-      throw new ConflictException('이미 존재하는 이메일입니다.');
+      throw new GraphQLError('이미 존재하는 이메일입니다.', {
+        extensions: {
+          code: 'EMAIL_ALREADY_EXISTS',
+          status: 400,
+        },
+      });
     }
   }
 

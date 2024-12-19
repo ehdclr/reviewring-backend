@@ -2,6 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: Float!
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type SignUpUserRes {
   id: Float
   email: String!
@@ -14,13 +31,9 @@ type SignUpUserRes {
   success: Boolean!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Query {
   healthCheck: String!
+  getUser(id: Float!): User!
 }
 
 type Mutation {

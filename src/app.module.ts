@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphqlExceptionFilter } from './common/filters/graphql-exception.filter';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -26,6 +27,12 @@ import redisConfig from './config/redis.config';
     UserModule,
   ],
   controllers: [],
-  providers: [PrismaService],
+  providers: [
+    PrismaService,
+    {
+      provide: 'APP_FILTER',
+      useClass: GraphqlExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

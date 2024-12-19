@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-
+import { GraphQLError } from 'graphql';
 jest.mock('bcrypt', () => ({
   hash: jest.fn(),
 }));
@@ -92,5 +92,9 @@ describe('UserService', () => {
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
       where: { id },
     });
+
+    //TODO 회원조회 실패시
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+    await expect(service.getUser(id)).rejects.toThrow(GraphQLError);
   });
 });

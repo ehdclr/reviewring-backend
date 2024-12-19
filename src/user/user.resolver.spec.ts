@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { SignUpUserInput } from './dto/signup.dto';
-// import { User } from './entities/user.entity';
+import { GraphQLError } from 'graphql';
 
 describe('UserResolver', () => {
   let resolver: UserResolver;
@@ -78,7 +78,7 @@ describe('UserResolver', () => {
       .mockRejectedValue(new Error(errorMessage));
     jest.spyOn(console, 'log').mockImplementation(() => {});
     await expect(resolver.signUp(createUserInput)).rejects.toThrow(
-      errorMessage,
+      new GraphQLError(errorMessage),
     );
   });
 
