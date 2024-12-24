@@ -57,13 +57,9 @@ describe('UserResolver', () => {
     jest.spyOn(userService, 'signUp').mockResolvedValue(mockUser as any);
     const result = await resolver.signUp(createUserInput);
     expect(result).toEqual({
-      id: 1,
-      email: 'test@test.com',
-      name: 'Test User',
-      phone: '010-1234-5678',
-      nickname: 'test',
-      success: true,
+      user: mockUser,
       message: '회원가입 성공',
+      success: true,
     });
     expect(userService.signUp).toHaveBeenCalledWith(createUserInput);
   });
@@ -94,7 +90,6 @@ describe('UserResolver', () => {
       name: 'Test User',
       phone: '010-1234-5678',
       nickname: 'test',
-      createdAt: new Date(),
     };
 
     jest.spyOn(userService, 'getUser').mockResolvedValue(mockUser as any);

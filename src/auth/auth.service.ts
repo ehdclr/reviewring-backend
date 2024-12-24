@@ -3,6 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
+import { Auth } from './entities/auth.entity';
+import { LoginInput } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginInput: LoginInput): Promise<void> {
+  async login(loginInput: LoginInput): Promise<Auth> {
     const user = await this.prisma.user.findUnique({
       where: { email: loginInput.email },
     });
@@ -37,5 +39,17 @@ export class AuthService {
         },
       });
     }
+
+    const accessToken = this.jwtService.sign({ id: user.id });
+    const refreshToken = this.jwtService.sign(
+      { id: user.id },
+      { expiresIn: '7d' },
+    );
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 }

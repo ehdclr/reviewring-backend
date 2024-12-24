@@ -39,7 +39,7 @@ export class UserResolver {
       const user = await this.userService.signUp(signUpUserInput);
 
       delete user.password; // 비밀번호 제외
-      return { ...user, message: '회원가입 성공', success: true };
+      return { user, message: '회원가입 성공', success: true };
     } catch (err) {
       console.log('에러 발생 : 회원가입 실패', err);
       throw new ApolloError('회원가입 실패', 'INTERNAL_SERVER_ERROR', {

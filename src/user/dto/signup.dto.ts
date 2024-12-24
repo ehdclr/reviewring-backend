@@ -1,5 +1,5 @@
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
-
+import { User } from '../entities/user.entity';
 @InputType()
 export class SignUpUserInput {
   @Field(() => String, { nullable: false })
@@ -20,26 +20,8 @@ export class SignUpUserInput {
 
 @ObjectType()
 export class SignUpUserRes {
-  @Field(() => Number, { nullable: true })
-  id?: number;
-
-  @Field(() => String)
-  email: string;
-
-  @Field(() => String)
-  name: string;
-
-  @Field(() => String)
-  phone: string;
-
-  @Field(() => String)
-  nickname: string;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
+  @Field(() => User)
+  user: Omit<User, 'password'>;
 
   @Field(() => String)
   message: string;
