@@ -42,14 +42,10 @@ export class UserResolver {
       return { ...user, message: '회원가입 성공', success: true };
     } catch (err) {
       console.log('에러 발생 : 회원가입 실패', err);
-      throw new ApolloError(
-        'Failed to retrieve user',
-        'INTERNAL_SERVER_ERROR',
-        {
-          status: 500,
-          originalError: err.message || err,
-        },
-      );
+      throw new ApolloError('회원가입 실패', 'INTERNAL_SERVER_ERROR', {
+        status: 500,
+        originalError: err.message || err,
+      });
     }
   }
 }

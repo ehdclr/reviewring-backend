@@ -8,6 +8,11 @@ describe('UserResolver', () => {
   let resolver: UserResolver;
   let userService: UserService;
 
+  beforeAll(async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -76,7 +81,6 @@ describe('UserResolver', () => {
     jest
       .spyOn(userService, 'signUp')
       .mockRejectedValue(new Error(errorMessage));
-    jest.spyOn(console, 'log').mockImplementation(() => {});
     await expect(resolver.signUp(createUserInput)).rejects.toThrow(
       new GraphQLError(errorMessage),
     );

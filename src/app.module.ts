@@ -8,6 +8,9 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { UserModule } from './user/user.module';
+import { AuthResolver } from './auth/auth.resolver';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
@@ -25,6 +28,7 @@ import redisConfig from './config/redis.config';
     PrismaModule,
     RedisModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [
@@ -33,6 +37,8 @@ import redisConfig from './config/redis.config';
       provide: 'APP_FILTER',
       useClass: GraphqlExceptionFilter,
     },
+    AuthResolver,
+    AuthService,
   ],
 })
 export class AppModule {}

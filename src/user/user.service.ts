@@ -9,7 +9,7 @@ import { GraphQLError } from 'graphql';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async signUp(user: SignUpUserInput) {
+  async signUp(user: SignUpUserInput): Promise<User> {
     const hashedPassword = await this.hashPassword(user.password);
     const normalizedEmail = user.email.toLowerCase();
     await this.validateUserData(normalizedEmail);
@@ -26,7 +26,7 @@ export class UserService {
     return createdUser;
   }
 
-  async getUser(id: number) {
+  async getUser(id: number): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -49,7 +49,7 @@ export class UserService {
     return entity;
   }
 
-  private async validateUserData(email: string) {
+  private async validateUserData(email: string): Promise<void> {
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -61,6 +61,8 @@ export class UserService {
         },
       });
     }
+
+    return;
   }
 
   private async hashPassword(password: string) {
