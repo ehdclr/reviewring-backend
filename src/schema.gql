@@ -1,0 +1,49 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Float!
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type SignUpUserRes {
+  id: Float
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  message: String!
+  success: Boolean!
+}
+
+type Query {
+  healthCheck: String!
+  getUser(id: Float!): User!
+}
+
+type Mutation {
+  signUp(signUpUserInput: SignUpUserInput!): SignUpUserRes!
+}
+
+input SignUpUserInput {
+  email: String!
+  name: String!
+  phone: String!
+  nickname: String!
+  password: String!
+}
