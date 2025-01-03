@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { RedisService } from '../redis/redis.service';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 jest.mock('bcrypt', () => ({
@@ -13,6 +13,8 @@ describe('AuthService', () => {
   let service: AuthService;
   let prisma: PrismaService;
   let jwtService: JwtService;
+  let redisService: RedisService;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -31,12 +33,19 @@ describe('AuthService', () => {
             sign: jest.fn(),
           },
         },
+        {
+          provide: RedisService,
+          useValue: {
+            set: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     prisma = module.get<PrismaService>(PrismaService);
     jwtService = module.get<JwtService>(JwtService);
+    redisService = module.get<RedisService>(RedisService);
   });
 
   describe('login', () => {
@@ -64,7 +73,11 @@ describe('AuthService', () => {
       jest.spyOn(jwtService, 'sign').mockReturnValue('mock-access-token');
 
       const result = await service.login(loginInput);
-
+      expect(redisService.set).toHaveBeenCalledWith(
+        `accessToken:${mockUser.id}`,
+        'mock-access-token',
+        60 * 60 * 24,
+      );
       expect(result.success).toBe(true);
       expect(result.message).toBe('로그인 성공');
       expect(result.accessToken).toBe('mock-access-token');

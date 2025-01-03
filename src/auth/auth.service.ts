@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { RedisService } from '../redis/redis.service';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import { LoginInput, LoginResponse } from './dto/login.dto';
@@ -10,6 +11,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
 
   async login(loginInput: LoginInput): Promise<LoginResponse> {
@@ -40,6 +42,11 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign({ userId: user.id });
+    await this.redisService.set(
+      `accessToken:${user.id}`,
+      accessToken,
+      60 * 60 * 24,
+    );
     return {
       accessToken,
       success: true,

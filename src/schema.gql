@@ -31,13 +31,26 @@ type SignUpUserRes {
   success: Boolean!
 }
 
+type LoginResponse {
+  accessToken: String!
+  success: Boolean!
+  message: String!
+  user: User!
+}
+
 type Query {
   healthCheck: String!
   getUser(id: Float!): User!
 }
 
 type Mutation {
+  login(loginInput: LoginInput!): LoginResponse!
   signUp(signUpUserInput: SignUpUserInput!): SignUpUserRes!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 input SignUpUserInput {

@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
-
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -24,6 +24,11 @@ import redisConfig from './config/redis.config';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, databaseConfig, redisConfig],
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
     }),
     PrismaModule,
     RedisModule,
