@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
+import { LoginInput, LoginResponse } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginInput: LoginInput): Promise<void> {
+  async login(loginInput: LoginInput): Promise<LoginResponse> {
     const user = await this.prisma.user.findUnique({
       where: { email: loginInput.email },
     });
@@ -37,5 +38,13 @@ export class AuthService {
         },
       });
     }
+
+    const accessToken = this.jwtService.sign({ userId: user.id });
+    return {
+      accessToken,
+      success: true,
+      message: '로그인 성공',
+      user,
+    };
   }
 }
