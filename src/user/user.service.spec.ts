@@ -120,4 +120,30 @@ describe('UserService', () => {
     jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
     await expect(service.validateEmail(email)).rejects.toThrow(GraphQLError);
   });
+
+  describe('닉네임 중복확인', () => {
+    it('닉네임 중복확인 성공', async () => {
+      const nickname = 'test';
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+      const result = await service.validateNickname(nickname);
+
+      expect(result).toBe(true);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { nickname },
+      });
+
+      const mockUser = {
+        id: 1,
+        email: 'test@test.com',
+        name: 'Test User',
+        phone: '010-1234-5678',
+        nickname: nickname,
+        createdAt: new Date(),
+      };
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any); // 이미 존재하는 닉네임
+      await expect(service.validateNickname(nickname)).rejects.toThrow(
+        GraphQLError,
+      );
+    });
+  });
 });

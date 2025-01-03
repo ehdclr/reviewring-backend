@@ -8,3 +8,12 @@ export class ValidateEmailRes {
   @Field(() => Boolean, { nullable: false })
   success: boolean;
 }
+
+@ObjectType()
+export class ValidateNicknameRes {
+  @Field(() => String, { nullable: false })
+  message: string;
+
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}

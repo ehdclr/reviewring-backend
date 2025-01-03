@@ -136,4 +136,17 @@ describe('UserResolver', () => {
     expect(result).toEqual(mockUser);
     expect(userService.getUser).toHaveBeenCalledWith(id);
   });
+
+  describe('닉네임 중복확인', () => {
+    it('닉네임 중복확인 성공', async () => {
+      const nickname = 'test';
+      jest.spyOn(userService, 'validateNickname').mockResolvedValue(true);
+      const result = await resolver.validateNickname(nickname);
+      expect(result).toEqual({
+        message: '닉네임 중복 확인 성공',
+        success: true,
+      });
+      expect(userService.validateNickname).toHaveBeenCalledWith(nickname);
+    });
+  });
 });

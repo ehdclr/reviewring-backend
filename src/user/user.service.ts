@@ -77,6 +77,32 @@ export class UserService {
     }
   }
 
+  async validateNickname(nickname: string): Promise<boolean> {
+    try {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { nickname: nickname },
+      });
+      if (existingUser) {
+        throw new GraphQLError('이미 존재하는 닉네임입니다.', {
+          extensions: {
+            code: 'NICKNAME_ALREADY_EXISTS',
+            status: 400,
+          },
+        });
+      }
+      return true;
+    } catch (error) {
+      if (error instanceof GraphQLError) throw error;
+      throw new GraphQLError('닉네임 검증 실패', {
+        extensions: {
+          code: 'VALIDATION_FAILED',
+          status: 500,
+          originalError: error.message,
+        },
+      });
+    }
+  }
+
   private async hashPassword(password: string) {
     return await bcrypt.hash(password, 10);
   }

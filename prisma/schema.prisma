@@ -23,7 +23,7 @@ model User {
   email     String   @unique
   name      String
   phone     String
-  nickname  String
+  nickname  String   @unique
   password  String
   deletedAt DateTime?
   createdAt DateTime @default(now())
