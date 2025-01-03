@@ -12,7 +12,7 @@ export class UserService {
   async signUp(user: SignUpUserInput): Promise<User> {
     const hashedPassword = await this.hashPassword(user.password);
     const normalizedEmail = user.email.toLowerCase();
-    await this.validateUserData(normalizedEmail);
+    await this.validateEmail(normalizedEmail);
 
     const createdUser = await this.prisma.user.create({
       data: {
@@ -49,20 +49,32 @@ export class UserService {
     return entity;
   }
 
-  private async validateUserData(email: string): Promise<void> {
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
-    });
-    if (existingUser) {
-      throw new GraphQLError('이미 존재하는 이메일입니다.', {
+  async validateEmail(email: string): Promise<boolean> {
+    try {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: email.toLowerCase() },
+      });
+
+      if (existingUser) {
+        throw new GraphQLError('이미 존재하는 이메일입니다.', {
+          extensions: {
+            code: 'EMAIL_ALREADY_EXISTS',
+            status: 400,
+          },
+        });
+      }
+
+      return true;
+    } catch (error) {
+      if (error instanceof GraphQLError) throw error;
+      throw new GraphQLError('이메일 검증 실패', {
         extensions: {
-          code: 'EMAIL_ALREADY_EXISTS',
-          status: 400,
+          code: 'VALIDATION_FAILED',
+          status: 500,
+          originalError: error.message,
         },
       });
     }
-
-    return;
   }
 
   private async hashPassword(password: string) {

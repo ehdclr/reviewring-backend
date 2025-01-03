@@ -31,6 +31,11 @@ type SignUpUserRes {
   success: Boolean!
 }
 
+type ValidateEmailRes {
+  message: String!
+  success: Boolean!
+}
+
 type LoginResponse {
   accessToken: String!
   success: Boolean!
@@ -46,6 +51,7 @@ type Query {
 type Mutation {
   login(loginInput: LoginInput!): LoginResponse!
   signUp(signUpUserInput: SignUpUserInput!): SignUpUserRes!
+  validateEmail(email: String!): ValidateEmailRes!
 }
 
 input LoginInput {

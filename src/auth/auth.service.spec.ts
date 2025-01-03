@@ -75,8 +75,8 @@ describe('AuthService', () => {
       const result = await service.login(loginInput);
       expect(redisService.set).toHaveBeenCalledWith(
         `accessToken:${mockUser.id}`,
-        'mock-access-token',
-        60 * 60 * 24,
+        'Bearer mock-access-token',
+        60 * 60 * 24 * 3,
       );
       expect(result.success).toBe(true);
       expect(result.message).toBe('로그인 성공');

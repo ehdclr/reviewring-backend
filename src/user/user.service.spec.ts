@@ -21,6 +21,8 @@ describe('UserService', () => {
             user: {
               create: jest.fn(),
               findUnique: jest.fn(),
+              findFirst: jest.fn(),
+              validateEmail: jest.fn(),
             },
           },
         },
@@ -93,8 +95,29 @@ describe('UserService', () => {
       where: { id },
     });
 
-    //TODO 회원조회 실패시
     jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
     await expect(service.getUser(id)).rejects.toThrow(GraphQLError);
+  });
+
+  it('이메일 중복 확인 성공', async () => {
+    const email = 'test@test.com';
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+    const result = await service.validateEmail(email);
+    expect(result).toBe(true);
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { email: email.toLowerCase() },
+    });
+
+    const mockUser = {
+      id: 1,
+      email: email,
+      name: 'Test User',
+      phone: '010-1234-5678',
+      nickname: 'test',
+      createdAt: new Date(),
+    };
+    // 이메일로 사용자 찾았을 때 존재하면안됨
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+    await expect(service.validateEmail(email)).rejects.toThrow(GraphQLError);
   });
 });
