@@ -24,6 +24,7 @@ describe('UserResolver', () => {
             signUp: jest.fn(),
             getUser: jest.fn(),
             validateEmail: jest.fn(),
+            validateNickname: jest.fn(),
           },
         },
       ],

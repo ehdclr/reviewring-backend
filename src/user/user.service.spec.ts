@@ -23,6 +23,7 @@ describe('UserService', () => {
               findUnique: jest.fn(),
               findFirst: jest.fn(),
               validateEmail: jest.fn(),
+              validateNickname: jest.fn(),
             },
           },
         },
