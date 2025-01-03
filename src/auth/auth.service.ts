@@ -45,7 +45,8 @@ export class AuthService {
     await this.redisService.set(
       `accessToken:${user.id}`,
       accessToken,
-      60 * 60 * 24,
+      //3일
+      60 * 60 * 24 * 3,
     );
     return {
       accessToken,
