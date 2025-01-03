@@ -45,7 +45,6 @@ export class AuthService {
     await this.redisService.set(
       `accessToken:${user.id}`,
       `Bearer ${accessToken}`,
-      //3일
       60 * 60 * 24 * 3,
     );
     return {
