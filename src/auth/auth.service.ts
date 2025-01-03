@@ -44,7 +44,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ userId: user.id });
     await this.redisService.set(
       `accessToken:${user.id}`,
-      accessToken,
+      `Bearer ${accessToken}`,
       //3일
       60 * 60 * 24 * 3,
     );
