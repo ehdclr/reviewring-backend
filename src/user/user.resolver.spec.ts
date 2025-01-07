@@ -9,6 +9,15 @@ describe('UserResolver', () => {
   let resolver: UserResolver;
   let userService: UserService;
 
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2025-01-07T04:25:12.637Z'));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   beforeAll(async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {});
     jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -154,19 +163,23 @@ describe('UserResolver', () => {
   describe('회원 조회', () => {
     it('회원 조회 성공', async () => {
       const id = 1;
+
       const mockUser = {
         id,
         email: 'test@test.com',
         name: 'Test User',
         phone: '010-1234-5678',
         nickname: 'test',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
 
       jest.spyOn(userService, 'getUser').mockResolvedValue(mockUser as any);
       const result = await resolver.getUser(id);
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual({
+        message: '회원 조회 성공',
+        success: true,
+        user: mockUser,
+      });
       expect(userService.getUser).toHaveBeenCalledWith(id);
     });
   });

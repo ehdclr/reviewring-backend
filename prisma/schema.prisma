@@ -25,6 +25,7 @@ model User {
   phone     String
   nickname  String   @unique
   password  String
+  image     String?
   deletedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

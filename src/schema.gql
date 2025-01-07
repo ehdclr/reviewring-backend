@@ -41,6 +41,12 @@ type ValidateNicknameRes {
   success: Boolean!
 }
 
+type GetUserResponse {
+  user: User!
+  message: String!
+  success: Boolean!
+}
+
 type LoginResponse {
   accessToken: String!
   success: Boolean!
@@ -50,7 +56,7 @@ type LoginResponse {
 
 type Query {
   healthCheck: String!
-  getUser(id: Float!): User!
+  getUser(id: Float!): GetUserResponse!
 }
 
 type Mutation {

@@ -1,9 +1,9 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { SignUpUserInput, SignUpUserRes } from './dto/signup.dto';
-import { User } from './entities/user.entity';
 import { ApolloError } from 'apollo-server-express';
 import { ValidateEmailRes, ValidateNicknameRes } from './dto/validate.dto';
+import { GetUserResponse } from './dto/user.dto';
 @Resolver()
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
@@ -14,11 +14,15 @@ export class UserResolver {
   }
 
   //TODO 회원 조회
-  @Query(() => User)
-  async getUser(@Args('id') id: number): Promise<User> {
+  @Query(() => GetUserResponse)
+  async getUser(@Args('id') id: number): Promise<GetUserResponse> {
     try {
       const user = await this.userService.getUser(id);
-      return user;
+      return {
+        user: user,
+        message: '회원 조회 성공',
+        success: true,
+      };
     } catch (err) {
       console.log('에러 발생 : 회원조회 실패', err);
       throw new ApolloError(
