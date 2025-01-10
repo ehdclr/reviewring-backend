@@ -1,9 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DayOfWeek } from 'src/common/entities/dayofweek.entity';
 import { Mentor } from './mentor.entity';
 
 @ObjectType()
-export class MentorSchedule {
+export class MentorUnavailableDate {
   @Field(() => Number)
   id?: number;
 
@@ -16,8 +15,8 @@ export class MentorSchedule {
   @Field(() => String)
   endTime?: string;
 
-  @Field(() => [DayOfWeek])
-  daysOfWeek?: DayOfWeek[];
+  @Field(() => String, { nullable: true })
+  reason?: string;
 
   @Field(() => String, { nullable: true })
   createdAt?: string;

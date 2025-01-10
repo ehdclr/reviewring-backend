@@ -1,6 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/user/entities/user.entity';
 import { MentorService } from './mentor_service.entity';
+import { MentorSchedule } from './mentor_schedule.entity';
+import { MentorUnavailableDate } from './mentor_unavailable_date.entity';
 
 @ObjectType()
 export class Mentor {
@@ -19,8 +21,8 @@ export class Mentor {
   @Field(() => [MentorSchedule])
   schedules?: MentorSchedule[];
 
-  @Field(() => [MentorUnavailable])
-  unavailable?: MentorUnavailable[];
+  @Field(() => [MentorUnavailableDate])
+  unavailable?: MentorUnavailableDate[];
 
   @Field(() => String, { nullable: true })
   createdAt?: string;
