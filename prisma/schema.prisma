@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,18 +13,137 @@ enum UserRole {
 }
 
 model User {
+  id              Int        @id @default(autoincrement())
+  email           String     @unique
+  name            String
+  phone           String
+  nickname        String     @unique
+  password        String
+  profileImage    String?
+  description     String?
+  role            UserRole   @default(USER)
+  IsActiveMentor  Boolean    @default(false)
+  mentor          Mentor?    @relation("UserToMentor")
+  IsActiveMentee  Boolean    @default(false)
+  careers         career[]
+  educations      education[]
+  skills          skill[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Mentor {
+  id              Int        @id @default(autoincrement())
+  user            User       @relation("UserToMentor", fields: [userId], references: [id])
+  userId          Int        @unique
+  categories      MentorCategory[]
+  description     String?
+  services        Service[]
+  schedules       mentor_schedule[]
+  unavailable     mentor_unavailable_date[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Category {
+  id              Int        @id @default(autoincrement())
+  name            String     @unique
+  description     String?
+  mentors        MentorCategory[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model MentorCategory {
+  mentorId        Int
+  categoryId      Int
+  mentor          Mentor      @relation(fields: [mentorId], references: [id])
+  category        Category    @relation(fields: [categoryId], references: [id])
+  @@id([mentorId, categoryId]) // 복합 기본 키 설정
+}
+
+model Service {
+  id              Int     @id @default(autoincrement())
+  mentor          Mentor  @relation(fields: [mentorId], references: [id])
+  mentorId        Int
+  price           Int
+  currency        String
+  moneyDescription String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model mentor_schedule_day {
+  scheduleId Int
+  dayId      Int
+  schedule   mentor_schedule @relation(fields: [scheduleId], references: [id])
+  day        day_of_week     @relation(fields: [dayId], references: [id])
+
+  @@id([scheduleId, dayId]) // 복합 기본 키 설정
+}
+
+model mentor_schedule {
+  id          Int                 @id @default(autoincrement())
+  mentor      Mentor              @relation(fields: [mentorId], references: [id])
+  mentorId    Int
+  startTime   DateTime
+  endTime     DateTime
+  daysOfWeek  mentor_schedule_day[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model day_of_week {
+  id          Int                 @id @default(autoincrement())
+  name        String              @unique
+  schedules   mentor_schedule_day[]
+}
+
+model mentor_unavailable_date {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  phone     String
-  nickname  String   @unique
-  password  String
-  profileImage     String?
-  deletedAt DateTime?
+  mentor    Mentor   @relation(fields: [mentorId], references: [id])
+  mentorId  Int
+  startTime DateTime 
+  endTime   DateTime 
+  reason    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  @@index([email])
-  @@index([phone])
-  @@index([nickname])
+model career {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String   
+  position    String?
+  description String
+  startDate   DateTime 
+  endDate     DateTime
+  isCurrent   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model education {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String   
+  description String
+  startDate   DateTime 
+  endDate     DateTime
+  degree      String
+  major       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model skill {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  name String 
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
