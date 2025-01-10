@@ -35,6 +35,9 @@ export class SignUpUserRes {
   @Field(() => String)
   nickname: string;
 
+  @Field(() => String, { nullable: true })
+  profileImage?: string;
+
   @Field(() => Date)
   createdAt: Date;
 

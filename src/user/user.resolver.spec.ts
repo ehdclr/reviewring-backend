@@ -143,7 +143,12 @@ describe('UserResolver', () => {
 
     jest.spyOn(userService, 'getUser').mockResolvedValue(mockUser as any);
     const result = await resolver.getUser(id);
-    expect(result).toEqual(mockUser);
+
+    expect(result).toEqual({
+      message: '회원 조회 성공',
+      success: true,
+      user: mockUser,
+    });
     expect(userService.getUser).toHaveBeenCalledWith(id);
   });
 

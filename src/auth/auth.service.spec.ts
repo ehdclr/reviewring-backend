@@ -60,13 +60,14 @@ describe('AuthService', () => {
       name: 'test',
       phone: '01012341234',
       nickname: 'test',
+      profileImage: 'testurl',
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
     };
 
     it('로그인 성공', async () => {
-      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
       jest
         .spyOn(bcrypt, 'compare')
         .mockImplementation(() => Promise.resolve(true));
@@ -97,7 +98,7 @@ describe('AuthService', () => {
     });
 
     it('비밀번호가 일치하지 않으면 오류 반환', async () => {
-      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
       jest
         .spyOn(bcrypt, 'compare')
         .mockImplementation(() => Promise.resolve(false));

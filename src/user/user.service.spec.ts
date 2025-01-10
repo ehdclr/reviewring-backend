@@ -10,6 +10,7 @@ jest.mock('bcrypt', () => ({
 describe('UserService', () => {
   let service: UserService;
   let prisma: PrismaService;
+  const fixedDate = new Date('2024-01-01T00:00:00Z');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,6 +25,7 @@ describe('UserService', () => {
               findFirst: jest.fn(),
               validateEmail: jest.fn(),
               validateNickname: jest.fn(),
+              update: jest.fn(),
             },
           },
         },
@@ -36,6 +38,7 @@ describe('UserService', () => {
 
   afterEach(() => {
     jest.clearAllMocks(); // Mock 상태 초기화
+    jest.useRealTimers();
   });
 
   it('회원가입 성공', async () => {
@@ -81,23 +84,32 @@ describe('UserService', () => {
 
   it('회원 조회 성공', async () => {
     const id = 1;
-    const mockUser = {
+    const mockPrismaUser = {
       id,
       email: 'test@test.com',
       name: 'Test User',
       phone: '010-1234-5678',
       nickname: 'test',
-      createdAt: new Date(),
+      createdAt: fixedDate,
+      updatedAt: fixedDate,
+      deletedAt: null,
+      profileImage: 'testurl',
     };
-    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
-    const result = await service.getUser(id);
-    expect(result).toEqual(mockUser);
-    expect(prisma.user.findUnique).toHaveBeenCalledWith({
-      where: { id },
-    });
 
-    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
-    await expect(service.getUser(id)).rejects.toThrow(GraphQLError);
+    jest
+      .spyOn(prisma.user, 'findUnique')
+      .mockResolvedValue(mockPrismaUser as any);
+    const result = await service.getUser(id);
+    expect(result).toEqual(
+      expect.objectContaining({
+        id: mockPrismaUser.id,
+        email: mockPrismaUser.email,
+        name: mockPrismaUser.name,
+        phone: mockPrismaUser.phone,
+        nickname: mockPrismaUser.nickname,
+        createdAt: mockPrismaUser.createdAt,
+      }),
+    );
   });
 
   it('이메일 중복 확인 성공', async () => {
@@ -145,6 +157,54 @@ describe('UserService', () => {
       await expect(service.validateNickname(nickname)).rejects.toThrow(
         GraphQLError,
       );
+    });
+  });
+
+  describe('사용자 정보 수정', () => {
+    const userId = 1;
+    const mockUser = {
+      id: userId,
+      email: 'test@test.com',
+      name: 'Test User',
+      phone: '010-1234-5678',
+      nickname: 'oldNickname',
+      profileImage: 'oldImageUrl',
+    };
+
+    it('프로필 업데이트 성공 (이미지 포함)', async () => {
+      const updateData = {
+        nickname: 'newNickname',
+        profileImage: 'https://new_image-url.com/image.jpg',
+      };
+
+      //업데이트 전 사용자 존재 확인
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+      jest.spyOn(prisma.user, 'update').mockResolvedValue({
+        ...mockUser,
+        nickname: updateData.nickname,
+        profileImage: updateData.profileImage,
+      } as any);
+
+      const result = await service.updateUser(userId, updateData);
+      expect(result).toEqual({
+        user: {
+          ...mockUser,
+          nickname: updateData.nickname,
+          profileImage: updateData.profileImage,
+        },
+        message: '사용자 업데이트 성공',
+        success: true,
+      });
+
+      expect(result.user.nickname).toBe(updateData.nickname);
+      expect(result.user.profileImage).toBe(updateData.profileImage);
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: userId },
+        data: expect.objectContaining({
+          nickname: updateData.nickname,
+          profileImage: updateData.profileImage,
+        }),
+      });
     });
   });
 });

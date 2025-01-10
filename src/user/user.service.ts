@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { SignUpUserInput } from './dto/signup.dto';
 import { User } from './entities/user.entity';
 import { GraphQLError } from 'graphql';
+import { UpdateUserInput, UpdateUserResponse } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -98,6 +99,44 @@ export class UserService {
           code: 'VALIDATION_FAILED',
           status: 500,
           originalError: error.message,
+        },
+      });
+    }
+  }
+
+  async updateUser(
+    id: number,
+    user: UpdateUserInput,
+  ): Promise<UpdateUserResponse> {
+    try {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { id },
+      });
+      if (!existingUser) {
+        throw new GraphQLError('사용자가 존재하지 않습니다.', {
+          extensions: {
+            code: 'USER_NOT_FOUND',
+            status: 404,
+          },
+        });
+      }
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: user,
+      });
+
+      return {
+        user: updatedUser,
+        message: '사용자 업데이트 성공',
+        success: true,
+      };
+    } catch (err) {
+      if (err instanceof GraphQLError) throw err;
+      throw new GraphQLError('사용자 업데이트 실패', {
+        extensions: {
+          code: 'VALIDATION_FAILED',
+          status: 500,
+          originalError: err.message,
         },
       });
     }

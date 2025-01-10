@@ -17,6 +17,9 @@ export class User {
   @Field(() => String)
   nickname: string;
 
+  @Field(() => String, { nullable: true })
+  profileImage?: string;
+
   @Field(() => String)
   password?: string;
 

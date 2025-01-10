@@ -8,6 +8,7 @@ type User {
   name: String!
   phone: String!
   nickname: String!
+  profileImage: String
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -25,6 +26,7 @@ type SignUpUserRes {
   name: String!
   phone: String!
   nickname: String!
+  profileImage: String
   createdAt: DateTime!
   updatedAt: DateTime!
   message: String!
