@@ -10,6 +10,10 @@ type User {
   nickname: String!
   profileImage: String
   password: String!
+  description: String
+  role: String
+  isActiveMentor: Boolean
+  isActiveMentee: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime!
@@ -27,6 +31,10 @@ type SignUpUserRes {
   phone: String!
   nickname: String!
   profileImage: String
+  description: String
+  role: String
+  isActiveMentor: Boolean
+  isActiveMentee: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
   message: String!
@@ -79,4 +87,7 @@ input SignUpUserInput {
   phone: String!
   nickname: String!
   password: String!
+  role: String = "USER"
+  isActiveMentor: Boolean = false
+  isActiveMentee: Boolean = false
 }

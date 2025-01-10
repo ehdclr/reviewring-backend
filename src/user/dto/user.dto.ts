@@ -19,6 +19,9 @@ export class UpdateUserInput {
   nickname?: string;
 
   @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => String, { nullable: true })
   profileImage?: string;
 }
 

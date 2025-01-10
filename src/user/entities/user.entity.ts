@@ -23,6 +23,18 @@ export class User {
   @Field(() => String)
   password?: string;
 
+  @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => String, { nullable: true, defaultValue: 'USER' })
+  role?: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentor?: boolean;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentee?: boolean;
+
   @Field(() => Date)
   createdAt?: Date;
 

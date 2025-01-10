@@ -15,6 +15,7 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
 import { JwtModule } from '@nestjs/jwt';
+import { MentorModule } from './mentor/mentor.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -34,6 +35,7 @@ import { JwtModule } from '@nestjs/jwt';
     RedisModule,
     UserModule,
     AuthModule,
+    MentorModule,
   ],
   controllers: [],
   providers: [

@@ -16,6 +16,15 @@ export class SignUpUserInput {
 
   @Field(() => String, { nullable: false })
   password: string;
+
+  @Field(() => String, { nullable: true, defaultValue: 'USER' })
+  role?: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentor?: boolean;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentee?: boolean;
 }
 
 @ObjectType()
@@ -37,6 +46,18 @@ export class SignUpUserRes {
 
   @Field(() => String, { nullable: true })
   profileImage?: string;
+
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  description?: string;
+
+  @Field(() => String, { nullable: true, defaultValue: 'USER' })
+  role?: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentor?: boolean;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isActiveMentee?: boolean;
 
   @Field(() => Date)
   createdAt: Date;

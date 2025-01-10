@@ -61,6 +61,9 @@ describe('AuthService', () => {
       phone: '01012341234',
       nickname: 'test',
       profileImage: 'testurl',
+      role: 'USER',
+      isActiveMentor: false,
+      isActiveMentee: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
@@ -82,7 +85,12 @@ describe('AuthService', () => {
       expect(result.success).toBe(true);
       expect(result.message).toBe('로그인 성공');
       expect(result.accessToken).toBe('mock-access-token');
-      expect(result.user).toEqual(mockUser);
+      expect(result.user).toEqual({
+        ...mockUser,
+        role: 'USER',
+        isActiveMentor: false,
+        isActiveMentee: false,
+      });
     });
 
     it('이메일이 존재하지 않으면 오류 반환', async () => {
